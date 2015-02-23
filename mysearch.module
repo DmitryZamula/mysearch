@@ -36,7 +36,6 @@ function mysearch_menu() {
  */
 function mysearch_searchpage() {
   $searchterm = arg(1);
-  $output = '<ul>';
   $search_results = db_select('field_data_body', 'db')
     ->fields('db', array('entity_id'))
     ->condition('db.body_value', '%' . db_like($searchterm) . '%', 'LIKE')
@@ -44,9 +43,9 @@ function mysearch_searchpage() {
   if ($search_results->rowCount() != 0) {
     foreach($search_results as $record) {
       $node = node_load($record->entity_id);
-      $output .= '<li>' . l($node->title, 'node/' . $node->nid, array('attributes' => array('title' => $node->title))) . '</li>';
+      $output[] = l($node->title, 'node/' . $node->nid, array('attributes' => array('title' => $node->title)));
     }
-    $output .= '</ul>';
+    $output = theme('item_list', array('items' => $output));
   } else {
     $output = t('No data');
   }
